@@ -45,8 +45,8 @@ class Qbxml
   #
   def from_qbxml(xml, opts = {})
     hash = Qbxml::Hash.from_xml(xml, underscore: true, schema: @doc)
-
-    opts[:no_namespace] ? hash : namespace_qbxml_hash(hash)
+    hash = opts[:no_namespace] ? hash : namespace_qbxml_hash(hash)
+    hash.extend(DeepFind)
   end
 
   # making this more sane so that it doesn't dump the whole schema doc to stdout

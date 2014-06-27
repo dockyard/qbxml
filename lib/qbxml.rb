@@ -9,4 +9,5 @@ class Qbxml; end
 
 require_relative 'qbxml/types.rb'
 require_relative 'qbxml/qbxml.rb'
+require_relative 'qbxml/deep_find.rb'
 require_relative 'qbxml/hash.rb'
