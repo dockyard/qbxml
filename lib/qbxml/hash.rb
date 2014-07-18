@@ -15,7 +15,7 @@ class Qbxml::Hash < ::Hash
   def self.from_hash(hash, opts = {}, &block)
     key_proc = \
       if opts[:camelize]
-        lambda { |k| k.camelize.gsub(Regexp.union(ACRONYMS)) { |val| val.upcase }} 
+        lambda { |k| k.camelize.gsub(Regexp.union(ACRONYMS)) { |val| val.upcase }}
       elsif opts[:underscore]
         lambda { |k| k.underscore }
       end
