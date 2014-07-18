@@ -30,11 +30,6 @@ module Qbxml::Types
     "TIMEINTERVALTYPE" => STR_CAST
   }
 
-  ACRONYMS = ['AP', 'AR', 'COGS', 'COM', 'UOM', 'QBXML', 'UI', 'AVS',
-              'PIN', 'SSN', 'COM', 'CLSID', 'FOB', 'EIN', 'UOM', 'PO', 'PIN', 'QB']
-
-  ActiveSupport::Inflector.inflections do |inflect|
-    ACRONYMS.each { |a| inflect.acronym a }
-  end
-
+  ACRONYMS = [/Ap\z/, /Ar/, /Cogs/, /Com\z/, /Uom/, /Qbxml/, /Ui/, /Avs/, /Id\z/,
+              /Pin/, /Ssn/, /Clsid/, /Fob/, /Ein/, /Uom/, /Po\z/, /Pin/, /Qb/]
 end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Qbxml do
+describe Qbxml::DeepFind do
   let(:qbxml) { Qbxml.new(:qb) }
 
   it "should be able to deep find a hash key" do
