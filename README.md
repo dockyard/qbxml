@@ -71,6 +71,36 @@ Convert a ruby hash to QBXML and validate all types
 q.to_qbxml(hsh, validate: true)
 ```
 
+Convert a ruby hash to QBXML with line items:
+```ruby
+  {
+    line_items: [
+    {
+      invoice_line_add: {
+        desc: "Line 1"
+      }
+    },
+    {
+      invoice_line_add: {
+        desc: "Line 2"
+      }
+    }
+    ]
+  }
+```
+
+The `line_items` will be omitted in the final XML yielding a proper:
+```xml
+<InvoiceAddRq>
+    <InvoiceLineAdd>
+      <Desc>Line 1</Desc>
+    </InvoiceLineAdd>
+    <InvoiceLineAdd>
+      <Desc>Line 2</Desc>
+    </InvoiceLineAdd>
+</InvoiceAddRq>
+```
+
 ## Contributing
 
 1. Fork it
