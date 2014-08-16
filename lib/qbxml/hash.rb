@@ -20,7 +20,6 @@ class Qbxml::Hash < ::Hash
       elsif opts[:underscore]
         lambda { |k| k.underscore }
       end
-
     deep_convert(hash, opts, &key_proc)
   end
 
@@ -32,9 +31,13 @@ class Qbxml::Hash < ::Hash
     opts[:root], hash = hash.first
     opts[:attributes] = hash.delete(ATTR_ROOT)
     xml = hash_to_xml(hash, opts)
-    doc = Nokogiri.XML(xml)
+    doc = Nokogiri.XML(xml, nil, opts[:encoding] || 'utf-8')
     doc = remove_tags_preserve_content(doc, LINE_ITEM)
-    doc.to_xml
+    if opts[:doc]
+      doc
+    else
+      doc.to_xml
+    end
   end
 
   def self.from_xml(xml, opts = {})

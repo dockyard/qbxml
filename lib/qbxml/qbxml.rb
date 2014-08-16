@@ -37,8 +37,7 @@ class Qbxml
     hash = Qbxml::Hash.from_hash(hash, camelize: true)
     hash = namespace_qbxml_hash(hash) unless opts[:no_namespace] 
     validate_qbxml_hash(hash) if opts[:validate]
-
-    Qbxml::Hash.to_xml(hash, xml_directive: XML_DIRECTIVES[@schema])
+    Qbxml::Hash.to_xml(hash, { xml_directive: XML_DIRECTIVES[@schema] }.merge(opts[:to_xml_opts] || {}))
   end
 
   # converts qbxml to a hash
