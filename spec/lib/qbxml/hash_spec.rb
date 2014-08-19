@@ -17,6 +17,22 @@ describe Qbxml::Hash do
       xml = qbxml.to_qbxml(hash)
       expect(xml).to_not match /\<LineItems/
     end
+
+    it "should have the default encoding of utf-8" do
+      xml = qbxml.to_qbxml(boilerplate('customer', {}))
+      expect(xml).to match /encoding=\"utf-8/
+    end
+
+    it "should be able to change the default encoding" do
+      xml = qbxml.to_qbxml(boilerplate('customer', {}), to_xml_opts: { encoding: 'windows-1251' } )
+      expect(xml).to match /encoding=\"windows-1251/
+    end
+
+    it "should just return the Nokogiri document" do
+      xml = qbxml.to_qbxml(boilerplate('customer', {}), to_xml_opts: { doc: true } )
+      expect(xml.class.to_s).to match /Nokogiri::XML::Document/
+    end
+
   end
 
   def line_item(line_number)
@@ -39,16 +55,21 @@ describe Qbxml::Hash do
     }
   end
 
+  def header(type, action)
+    "#{type}_#{action}"
+  end
+
   def boilerplate(type, body_hash, options = {})
+    head = header(type, options[:action] || 'add')
     {  :qbxml_msgs_rq =>
        [
          {
            :xml_attributes =>  { "onError" => "stopOnError"},
-           "#{type}_rq".to_sym =>
+           head + '_rq' =>
            [
              {
                :xml_attributes => { "requestID" => "#{options[:id] || 1}" },
-               "#{type}_#{options[:action] || 'add'}_rq".to_sym => body_hash
+               head => body_hash
              }
            ]
          }
