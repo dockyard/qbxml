@@ -11,7 +11,8 @@ describe Qbxml::Hash do
       c[:last_name] = last_name
       c[:bill_address][:addr2] = '123 Hölt Brewery Rd'
       xml = qbxml.to_qbxml(boilerplate('customer', c))
-      puts xml
+      expect(xml).to match /LastName\>Habl&#233; \"&gt;/
+      expect(xml).to match /Addr2\>123 H&#246;lt Brewery Rd/
     end
 
     it 'should encode special characters with decimal htmlentities within line items' do
@@ -24,9 +25,7 @@ describe Qbxml::Hash do
       hash = { line_items: [ l1, l2 ] }
       hash = boilerplate('invoice', hash)
       xml = qbxml.to_qbxml(hash)
-      #expect(xml).to_not match /LineItems/
-      #xml = qbxml.to_qbxml(boilerplate('customer', c))
-      #puts xml
+      expect(xml).to match /Desc\>Habl&#233; "boxes"&gt/
     end
   end
 
@@ -47,12 +46,7 @@ describe Qbxml::Hash do
 
     it "should have the default encoding of utf-8" do
       xml = qbxml.to_qbxml(boilerplate('customer', {}))
-      expect(xml).to match /encoding=\"utf-8/
-    end
-
-    it "should be able to change the default encoding" do
-      xml = qbxml.to_qbxml(boilerplate('customer', {}), to_xml_opts: { encoding: 'windows-1251' } )
-      expect(xml).to match /encoding=\"windows-1251/
+      expect(xml).to match /encoding=\"US-ASCII/
     end
 
     it "should just return the Nokogiri document" do

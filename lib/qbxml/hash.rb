@@ -31,13 +31,12 @@ class Qbxml::Hash < ::Hash
     opts[:root], hash = hash.first
     opts[:attributes] = hash.delete(ATTR_ROOT)
     xml = hash_to_xml(hash, opts)
-    doc = Nokogiri.XML(xml, nil, opts[:encoding] || 'utf-8')
+    doc = Nokogiri.XML(xml)
     doc = remove_tags_preserve_content(doc, LINE_ITEM)
     if opts[:doc]
       doc
     else
-      puts doc.to_xml
-      doc.to_xml
+      doc.to_xml(encoding: 'US-ASCII')
     end
   end
 
@@ -82,10 +81,7 @@ private
         when Array
           val.map { |i| self.hash_to_xml(i, opts.merge({root: key, skip_instruct: true})) }
         else
-          val = ::HTMLEntities.new.encode(val, :decimal)
-          builder.tag!(key) do |t|
-            t << val
-          end
+          builder.tag!(key, val, {})
         end
       end
 

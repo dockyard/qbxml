@@ -1,7 +1,6 @@
 require "qbxml/version"
 
 require 'nokogiri'
-require 'htmlentities'
 require 'active_support/builder'
 require 'active_support/inflections'
 require 'active_support/core_ext/string'
