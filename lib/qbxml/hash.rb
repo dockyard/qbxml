@@ -36,6 +36,7 @@ class Qbxml::Hash < ::Hash
     if opts[:doc]
       doc
     else
+      puts doc.to_xml
       doc.to_xml
     end
   end
@@ -81,7 +82,10 @@ private
         when Array
           val.map { |i| self.hash_to_xml(i, opts.merge({root: key, skip_instruct: true})) }
         else
-          builder.tag!(key, val, {})
+          val = ::HTMLEntities.new.encode(val, :decimal)
+          builder.tag!(key) do |t|
+            t << val
+          end
         end
       end
 
