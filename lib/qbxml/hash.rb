@@ -10,16 +10,16 @@ class Qbxml::Hash < ::Hash
   CONTENT_ROOT = '__content__'.freeze
   ATTR_ROOT    = 'xml_attributes'.freeze
   IGNORED_KEYS = [ATTR_ROOT]
+  LINE_ITEM = 'LineItems' 
 
 
   def self.from_hash(hash, opts = {}, &block)
     key_proc = \
       if opts[:camelize]
-        lambda { |k| k.camelize.gsub(/Id\z/,'ID')}
+        lambda { |k| k.camelize.gsub(Regexp.union(ACRONYMS)) { |val| val.upcase }}
       elsif opts[:underscore]
         lambda { |k| k.underscore }
       end
-
     deep_convert(hash, opts, &key_proc)
   end
 
@@ -30,12 +30,30 @@ class Qbxml::Hash < ::Hash
   def self.to_xml(hash, opts = {})
     opts[:root], hash = hash.first
     opts[:attributes] = hash.delete(ATTR_ROOT)
-    hash_to_xml(hash, opts)
+    xml = hash_to_xml(hash, opts)
+    doc = Nokogiri.XML(xml)
+    doc = remove_tags_preserve_content(doc, LINE_ITEM)
+    if opts[:doc]
+      doc
+    else
+      doc.to_xml(encoding: 'US-ASCII')
+    end
   end
 
   def self.from_xml(xml, opts = {})
-    from_hash(
-      xml_to_hash(Nokogiri::XML(xml).root, {}, opts), opts)
+    from_hash(xml_to_hash(Nokogiri::XML(xml).root, {}, opts), opts)
+  end
+
+  def self.remove_tags_preserve_content(doc, name)
+    doc.xpath(".//#{name}").reverse.each do |element|
+      element.children.reverse.each do |child|
+        child_clone = child.clone
+        element.add_next_sibling child_clone
+        child.unlink
+      end
+      element.unlink
+    end
+    doc
   end
 
 private
